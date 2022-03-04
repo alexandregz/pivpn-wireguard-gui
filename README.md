@@ -12,3 +12,27 @@ Add, revoke and download WireGuard vpn profiles with QR Code support.
  
  ## Extend
  New drivers can be added by implementing the `VPNDriver.php` interface. 
+
+
+## Serve with lighttpd
+
+To reuse the lighttpd installed by pihole, you need:
+- add this to allow vhosts easily:
+
+```bash
+root@raspberrypi:/etc/lighttpd# grep vhosts lighttpd.conf
+# para incluir vhosts
+include_shell "cat /etc/lighttpd/vhosts.d/*.conf"
+```
+
+- create vhost config to serve `public`:
+
+```bash
+root@raspberrypi:/etc/lighttpd/vhosts.d# cat pivpn-wireguard-gui.conf
+$HTTP["host"] == "pivpn-wireguard-gui.lan" {
+
+        server.document-root = "/home/pi/pivpn-wireguard-gui/public"
+        server.errorlog = "/var/log/lighttpd/pivpn-wireguard-gui.error.log"
+        accesslog.filename = "/var/log/lighttpd/pivpn-wireguard-gui.access.log"
+}
+```
