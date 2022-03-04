@@ -16,11 +16,17 @@ Add, revoke and download WireGuard vpn profiles with QR Code support.
 
 ## Serve with lighttpd
 
+DON'T WORKS!!
+
+
+
+Infor extracted from https://tecadmin.net/setup-virtualhosts-in-lighttpd-server/:
+
 To reuse the lighttpd installed by pihole, you need:
-- add this to allow vhosts easily:
+- add this to `/etc/lighttpd/external.conf`:
 
 ```bash
-root@raspberrypi:/etc/lighttpd# grep vhosts lighttpd.conf
+root@raspberrypi:/etc/lighttpd# cat external.conf
 # para incluir vhosts
 include_shell "cat /etc/lighttpd/vhosts.d/*.conf"
 ```
@@ -31,8 +37,22 @@ include_shell "cat /etc/lighttpd/vhosts.d/*.conf"
 root@raspberrypi:/etc/lighttpd/vhosts.d# cat pivpn-wireguard-gui.conf
 $HTTP["host"] == "pivpn-wireguard-gui.lan" {
 
-        server.document-root = "/home/pi/pivpn-wireguard-gui/public"
+        server.document-root = "/home/pi/pivpn-wireguard-gui/public/index.php"
         server.errorlog = "/var/log/lighttpd/pivpn-wireguard-gui.error.log"
         accesslog.filename = "/var/log/lighttpd/pivpn-wireguard-gui.access.log"
 }
+```
+
+- check syntax
+
+```bash
+root@raspberrypi:/etc/lighttpd# lighttpd -t -f /etc/lighttpd/lighttpd.conf
+Syntax OK
+```
+
+- restart lighttpd
+
+```bash
+root@raspberrypi:/etc/lighttpd# service lighttpd restart
+root@raspberrypi:/etc/lighttpd#
 ```
